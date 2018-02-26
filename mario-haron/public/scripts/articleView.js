@@ -1,7 +1,9 @@
 'use strict';
 var app = app || {};
+
 (function (module) {
   var articleView = {};
+  
 
   articleView.populateFilters = () => {
     $('article').each(function() {
@@ -96,7 +98,7 @@ var app = app || {};
       body: $('#article-body').val(),
       publishedOn: new Date().toISOString()
     });
-
+    
     $('#articles').append(article.toHtml());
     $('pre code').each((i, block) => hljs.highlightBlock(block));
   };
@@ -129,7 +131,7 @@ var app = app || {};
     $('pre code').each((i, block) => hljs.highlightBlock(block));
   };
 
-  articleView.initAdminPage = () => {
+  app.articleView.initAdminPage = () => {
     let source = document.getElementById('#total-words').innerHTML;
     let template = Handlebars.compile(source);
 
@@ -140,4 +142,5 @@ var app = app || {};
     $('#blog-stats .articles').text(app.Article.all.length);
     $('#blog-stats .words').text(app.Article.numWordsAll());
   };
-})();
+  module.articleView = articleView;
+})(app);
