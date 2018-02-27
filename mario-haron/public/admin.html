@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="styles/layout.css">
     <link rel="stylesheet" href="styles/modules.css">
     <link rel="icon" type="image/x-icon" href="https://avatars2.githubusercontent.com/u/18607604?v=3&s=200">
+    <script id="author-template" type="text/x-handlebars-template">
+    <li><strong>{{name}}</strong>: {{numWords}} words written</li>
+    </script>
   </head>
   <body>
     <header class="site-header clearfix">
@@ -28,19 +31,18 @@
         </ul>
       </nav>
     </header>
+    <main class="clearfix">
       <h1>Blog Stats</h1>
-
-      <script id="total-words" type="text/x-handlebars-template"> <main class="clearfix"></main>
-
       <section id="blog-stats">
-        <dt>Total articles:{{total-articles}}</dt> <dd class="articles"></dd>
-        <dt>Total words:{{total-words}}</dt> <dd class="words"></dd>
+        <dt>Total articles:</dt> <dd class="articles"></dd>
+        <dt>Total words:</dt> <dd class="words"></dd>
         <h2>Author Stats</h2>
         <p><em>Details on who is writing, and how much writing they are doing...</em></p>
         <ul class="author-stats">
         {{author-name}}:{{total-words}} {{words-written}}
         </ul>
       </section>
+    </main>
     </script>
     
     </main>
