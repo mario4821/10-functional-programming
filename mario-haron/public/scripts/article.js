@@ -1,9 +1,9 @@
+
 'use strict';
 var app = app || {};
-(function (module) {
 
+(function(module) {
   function Article(rawDataObj) {
-  // REVIEW: In Lab 8, we explored a lot of new functionality going on here. Let's re-examine the concept of context. Normally, "this" inside of a constructor function refers to the newly instantiated object. However, in the function we're passing to forEach, "this" would normally refer to "undefined" in strict mode. As a result, we had to pass a second argument to forEach to make sure our "this" was still referring to our instantiated object. One of the primary purposes of lexical arrow functions, besides cleaning up syntax to use fewer lines of code, is to also preserve context. That means that when you declare a function using lexical arrows, "this" inside the function will still be the same "this" as it was outside the function. As a result, we no longer have to pass in the optional "this" argument to forEach!
     Object.keys(rawDataObj).forEach(key => this[key] = rawDataObj[key]);
   }
 
@@ -20,32 +20,48 @@ var app = app || {};
   };
 
   Article.loadAll = articleData => {
-    articleData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)))
+    articleData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)));
 
-  /* OLD forEach():
-  articleData.forEach(articleObject => Article.all.push(new Article(articleObject)));
-  */
-
+    Article.all = articleData.map(ele => new Article(ele));
   };
 
   Article.fetchAll = callback => {
     $.get('/articles')
-      .then(results => {
-        Article.loadAll(results);
-        callback();
-      })
+      .then(
+        results => {
+          Article.loadAll(results);
+          callback();
+        })
   };
 
-  Article.numWordsAll = () => {
-    return Article.all.map().reduce()
-  };
+  Article.numWordsAll = () => Article.all.map(article => article.body.match(/\b\w+/g).length).reduce((a, b) => a + b)
 
   Article.allAuthors = () => {
-    return Article.all.map().reduce();
+    return Article.all.map(article => article.author)
+      .reduce((namesArray, name) => {
+        if (namesArray.indexOf(name) === -1) namesArray.push(name);
+        return namesArray;
+      }, []);
   };
 
   Article.numWordsByAuthor = () => {
-    return Article.allAuthors().map(author => {})
+    return Article.allAuthors().map(author => {
+    
+      return {
+        name: author,
+        numWords: Article.all.filter(a => a.author === author)
+          .map(a => a.body.match(/\b\w+/g).length)
+          .reduce((a, b) => a + b)
+      }
+    })
+  };
+
+  Article.stats = () => {
+    return {
+      numArticles: Article.all.length,
+      numWords: Article.numWordsAll(),
+      Authors: Article.allAuthors(),
+    }
   };
 
   Article.truncateTable = callback => {
@@ -53,13 +69,12 @@ var app = app || {};
       url: '/articles',
       method: 'DELETE',
     })
-      .then(console.log)
-    // REVIEW: Check out this clean syntax for just passing 'assumed' data into a named function! The reason we can do this has to do with the way Promise.prototype.then() works. It's a little outside the scope of 301 material, but feel free to research!
+      .then(console.log) 
       .then(callback);
   };
 
   Article.prototype.insertRecord = function(callback) {
-  // REVIEW: Why can't we use an arrow function here for .insertRecord()?
+   
     $.post('/articles', {author: this.author, authorUrl: this.authorUrl, body: this.body, category: this.category, publishedOn: this.publishedOn, title: this.title})
       .then(console.log)
       .then(callback);
@@ -91,5 +106,6 @@ var app = app || {};
       .then(console.log)
       .then(callback);
   };
+
   module.Article = Article;
 })(app);

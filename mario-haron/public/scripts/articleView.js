@@ -1,9 +1,8 @@
 'use strict';
 var app = app || {};
 
-(function (module) {
+(function(module) {
   var articleView = {};
-  
 
   articleView.populateFilters = () => {
     $('article').each(function() {
@@ -90,7 +89,7 @@ var app = app || {};
     var article;
     $('#articles').empty();
 
-    article = new Article({
+    article = new app.Article({
       title: $('#article-title').val(),
       author: $('#article-author').val(),
       authorUrl: $('#article-author-url').val(),
@@ -98,14 +97,14 @@ var app = app || {};
       body: $('#article-body').val(),
       publishedOn: new Date().toISOString()
     });
-    
+
     $('#articles').append(article.toHtml());
     $('pre code').each((i, block) => hljs.highlightBlock(block));
   };
 
   articleView.submit = event => {
     event.preventDefault();
-    let article = new Article({
+    let article = new app.Article({
       title: $('#article-title').val(),
       author: $('#article-author').val(),
       authorUrl: $('#article-author-url').val(),
@@ -131,16 +130,14 @@ var app = app || {};
     $('pre code').each((i, block) => hljs.highlightBlock(block));
   };
 
-  app.articleView.initAdminPage = () => {
-    let source = document.getElementById('#total-words').innerHTML;
-    let template = Handlebars.compile(source);
-
-    // REVIEW: We use .forEach() here because we are relying on the side-effects of the callback function: appending to the DOM. The callback is not required to return anything.
+  articleView.initAdminPage = () => {
+    var template = Handlebars.compile($('#author-template').text());
     app.Article.numWordsByAuthor().forEach(stat => $('.author-stats').append(template(stat)));
 
     // REVIEW: Simply write the correct values to the page:
     $('#blog-stats .articles').text(app.Article.all.length);
     $('#blog-stats .words').text(app.Article.numWordsAll());
   };
+
   module.articleView = articleView;
 })(app);
