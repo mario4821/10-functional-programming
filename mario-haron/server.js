@@ -15,11 +15,11 @@ client.on('error', err => {
 });
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('./public'));
 
-app.get('/new', (request, response) => response.sendFile('new.html', {root: './public'}));
-app.get('/admin', (request, response) => response.sendFile('admin.html', {root: './public'}));
+app.get('/new', (request, response) => response.sendFile('new.html', { root: './public' }));
+app.get('/admin', (request, response) => response.sendFile('admin.html', { root: './public' }));
 app.get('/articles', (request, response) => {
   client.query(`
     SELECT * FROM articles
@@ -34,7 +34,7 @@ app.post('/articles', (request, response) => {
   client.query(
     'INSERT INTO authors(author, "authorUrl") VALUES($1, $2) ON CONFLICT DO NOTHING',
     [request.body.author, request.body.authorUrl],
-    function(err) {
+    function (err) {
       if (err) console.error(err)
       queryTwo()
     }
@@ -44,7 +44,7 @@ app.post('/articles', (request, response) => {
     client.query(
       `SELECT author_id FROM authors WHERE author=$1`,
       [request.body.author],
-      function(err, result) {
+      function (err, result) {
         if (err) console.error(err)
         queryThree(result.rows[0].author_id)
       }
@@ -63,7 +63,7 @@ app.post('/articles', (request, response) => {
         request.body.publishedOn,
         request.body.body
       ],
-      function(err) {
+      function (err) {
         if (err) console.error(err);
         response.send('insert complete');
       }
@@ -77,7 +77,7 @@ app.put('/articles/:id', (request, response) => {
     SET author=$1, "authorUrl"=$2
     WHERE author_id=$3
     `,
-    [request.body.author, request.body.authorUrl, request.body.author_id]
+  [request.body.author, request.body.authorUrl, request.body.author_id]
   )
     .then(() => {
       client.query(`
@@ -85,14 +85,14 @@ app.put('/articles/:id', (request, response) => {
       SET author_id=$1, title=$2, category=$3, "publishedOn"=$4, body=$5
       WHERE article_id=$6
       `,
-        [
-          request.body.author_id,
-          request.body.title,
-          request.body.category,
-          request.body.publishedOn,
-          request.body.body,
-          request.params.id
-        ]
+      [
+        request.body.author_id,
+        request.body.title,
+        request.body.category,
+        request.body.publishedOn,
+        request.body.body,
+        request.params.id
+      ]
       )
     })
     .then(() => response.send('Update complete'))
@@ -136,7 +136,7 @@ function loadAuthors() {
 function loadArticles() {
   client.query('SELECT COUNT(*) FROM articles')
     .then(result => {
-      if(!parseInt(result.rows[0].count)) {
+      if (!parseInt(result.rows[0].count)) {
         fs.readFile('./public/data/hackerIpsum.json', 'utf8', (err, fd) => {
           JSON.parse(fd).forEach(ele => {
             client.query(`
@@ -146,7 +146,7 @@ function loadArticles() {
             FROM authors
             WHERE author=$5;
           `,
-              [ele.title, ele.category, ele.publishedOn, ele.body, ele.author]
+            [ele.title, ele.category, ele.publishedOn, ele.body, ele.author]
             )
               .catch(console.error);
           })

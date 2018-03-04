@@ -3,13 +3,17 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Lab 10</title>
+    <title>Sol. 10</title>
     <link rel="stylesheet" href="vendor/styles/normalize.css">
     <link rel="stylesheet" href="vendor/styles/icons.css">
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/layout.css">
     <link rel="stylesheet" href="styles/modules.css">
     <link rel="icon" type="image/x-icon" href="https://avatars2.githubusercontent.com/u/18607604?v=3&s=200">
+    <!-- TODO: Setup a template for each row of the Author Stats section of this page: -->
+    <script id="author-template" type="text/x-handlebars-template">
+      <li><strong>{{name}}</strong>: {{numWords}} words written</li>
+    </script>
   </head>
   <body>
     <header class="site-header clearfix">
@@ -30,19 +34,14 @@
     </header>
     <main class="clearfix">
       <h1>Blog Stats</h1>
-
-      <script id="total-words" type="text/x-handlebars-template">
       <section id="blog-stats">
-        <dt>Total articles:{{total-articles}}</dt> <dd class="articles"></dd>
-        <dt>Total words:{{total-words}}</dt> <dd class="words"></dd>
+        <dt>Total articles:</dt> <dd class="articles"></dd>
+        <dt>Total words:</dt> <dd class="words"></dd>
         <h2>Author Stats</h2>
         <p><em>Details on who is writing, and how much writing they are doing...</em></p>
         <ul class="author-stats">
-        {{author-name}}:{{total-words}} {{words-written}}
         </ul>
       </section>
-    </script>
-    
     </main>
     <footer>
       &copy; 2017 Code Fellows | Static Blog | Happy Ipsum!
@@ -53,7 +52,8 @@
     <script src="scripts/article.js"></script>
     <script src="scripts/articleView.js"></script>
     <script>
-      Article.fetchAll();
+     
+      app.Article.fetchAll(app.articleView.initAdminPage);
     </script>
   </body>
 </html>
